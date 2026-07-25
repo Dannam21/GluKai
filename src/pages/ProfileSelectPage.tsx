@@ -22,7 +22,7 @@ export function ProfileSelectPage() {
             <h2 className="mt-5 text-2xl font-extrabold text-[#102A56]">Mateo</h2>
             <p className="mt-2 text-sm font-bold text-[#345184]">Mi aventura</p>
           </a>
-          <a href="/" className="relative rounded-[24px] bg-white p-7 shadow-[0_18px_42px_rgba(16,42,86,0.07)] ring-1 ring-[#D6E0EE] transition hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#BFE7FF]">
+          <a href="/caregiver/access" className="relative rounded-[24px] bg-white p-7 shadow-[0_18px_42px_rgba(16,42,86,0.07)] ring-1 ring-[#D6E0EE] transition hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-[#BFE7FF]">
             <div className="mx-auto grid h-44 w-44 place-items-center rounded-full bg-[#F8FCFF] text-8xl">👨‍👩</div>
             <span className="absolute right-8 top-32 grid h-12 w-12 place-items-center rounded-full bg-white text-2xl shadow-sm">🛡️</span>
             <h2 className="mt-5 text-2xl font-extrabold text-[#102A56]">Cuidador</h2>

@@ -10,6 +10,12 @@ import { RegisterDetailsPage } from './pages/RegisterDetailsPage'
 import { RegisterInterestsPage } from './pages/RegisterInterestsPage'
 import { RegisterPage } from './pages/RegisterPage'
 import { WelcomePage } from './pages/WelcomePage'
+import { BraveMomentPage } from './pages/BraveMomentPage'
+import { DiaryPage } from './pages/DiaryPage'
+import { ProfilePage } from './pages/ProfilePage'
+import { RewardsPage } from './pages/RewardsPage'
+import { CaregiverDashboardPage } from './pages/CaregiverDashboardPage'
+import { CaregiverPinPage } from './pages/CaregiverPinPage'
 
 export default function App() {
   const [path, setPath] = useState(window.location.pathname)
@@ -30,5 +36,12 @@ export default function App() {
   if (path === '/chat') return <ChatPage />
   if (path === '/missions') return <MissionsPage />
   if (path === '/plate') return <PlatePage />
+  if (path === '/brave-moment') return <BraveMomentPage />
+  if (path === '/diary') return <DiaryPage />
+  if (path === '/rewards') return <RewardsPage />
+  if (path === '/profile') return <ProfilePage />
+  if (path === '/register/caregiver-pin') return <CaregiverPinPage />
+  if (path === '/caregiver/access') return <CaregiverPinPage access />
+  if (path === '/caregiver') return <CaregiverDashboardPage />
   return <PlaceholderPage path={path} />
 }
