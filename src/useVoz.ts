@@ -3,15 +3,21 @@
 // escuchar(): convierte la voz del nino en texto.
 
 export function hablar(texto: string) {
+  if (!window.speechSynthesis) return
   speechSynthesis.cancel()
-  const limpio = texto.replace(/[^\p{L}\p{N}\s.,!?¿¡]/gu, '')
+  const limpio = texto.replace(/[^\p{L}\p{N}\s.,!?¿¡]/gu, '').replace(/\s+/g, ' ').trim()
+  if (!limpio) return
   const decir = () => {
     const u = new SpeechSynthesisUtterance(limpio)
     u.lang = 'es-ES'
-    u.pitch = 1.7
+    u.pitch = 1.5
     u.rate = 0.95
+    u.volume = 1
     const voces = speechSynthesis.getVoices()
-    const vozES = voces.find((v) => v.lang.startsWith('es'))
+    const vozES =
+      voces.find((v) => v.lang === 'es-ES') ||
+      voces.find((v) => v.lang.startsWith('es')) ||
+      null
     if (vozES) u.voice = vozES
     speechSynthesis.speak(u)
   }
