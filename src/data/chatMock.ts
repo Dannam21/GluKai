@@ -33,20 +33,7 @@ export const emotions: Emotion[] = [
   'Tengo miedo',
 ]
 
-export const initialMessages: ChatMessage[] = [
-  {
-    id: 1,
-    author: 'child',
-    text: 'Estoy un poco nervioso porque mañana tengo que cambiar mi sensor y me da miedo que me duela',
-    time: '09:32',
-  },
-  {
-    id: 2,
-    author: 'glukai',
-    text: 'Gracias por contarme, es normal sentir miedo a veces. Estoy aqui contigo. ¿Quieres que veamos juntos como sera el cambio del sensor o prefieres hacer algo para sentirte mas tranquilo?',
-    time: '09:33',
-  },
-]
+export const initialMessages: ChatMessage[] = []
 
 export const suggestedActions: SuggestedActionItem[] = [
   {
