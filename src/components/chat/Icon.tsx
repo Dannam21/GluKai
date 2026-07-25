@@ -23,6 +23,7 @@ type IconProps = {
     | 'mail'
     | 'lock'
     | 'eyeOff'
+    | 'speaker'
   className?: string
 }
 
@@ -50,6 +51,7 @@ const paths: Record<IconProps['name'], string[]> = {
   mail: ['M4 6h16v12H4z', 'M4 7l8 6 8-6'],
   lock: ['M7 11V8a5 5 0 0 1 10 0v3', 'M6 11h12v10H6z'],
   eyeOff: ['M3 3l18 18', 'M10.6 10.6A2 2 0 0 0 13.4 13.4', 'M9.9 5.2A9.8 9.8 0 0 1 12 5c5 0 8.5 4.5 9.5 7a12.9 12.9 0 0 1-2.1 3.2', 'M6.2 6.2A13.7 13.7 0 0 0 2.5 12c1 2.5 4.5 7 9.5 7a9.7 9.7 0 0 0 4.1-.9'],
+  speaker: ['M11 5L6 9H3v6h3l5 4V5z', 'M15.5 9a5 5 0 0 1 0 6', 'M18.5 6.5a9 9 0 0 1 0 11'],
 }
 
 export function Icon({ name, className = 'h-5 w-5' }: IconProps) {

@@ -16,9 +16,13 @@ export function MissionsPage() {
           <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(760px,1fr)_390px] 2xl:grid-cols-[minmax(900px,1fr)_410px]">
             <section className="min-w-0 space-y-5">
               {missionWorlds.map((world) => <MissionWorldRow key={world.id} world={world} />)}
-              <div className="mx-auto flex max-w-3xl items-center justify-center gap-4 rounded-full bg-[#1677FF] px-6 py-3 text-center font-extrabold text-white shadow-[0_12px_28px_rgba(22,119,255,0.25)]">
-                <GlukaiImage variant="chat" alt="" className="h-12 w-12" />
-                ¡Sigue asi, Mateo! Cada mision te hace mas sabio y valiente. 💙 ✦
+              <div className="relative flex items-center gap-5 overflow-hidden rounded-[24px] bg-[linear-gradient(135deg,_#1a6fff_0%,_#2f8fff_60%,_#56adff_100%)] px-6 py-4 shadow-[0_12px_32px_rgba(22,119,255,0.28)]">
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.15),_transparent_55%)]" />
+                <GlukaiImage variant="main" alt="Glukai" className="relative h-16 w-16 shrink-0 drop-shadow-md" />
+                <div className="relative min-w-0">
+                  <p className="text-base font-extrabold text-white">¡Dilo así, Mateo!</p>
+                  <p className="mt-0.5 text-sm font-bold text-white/85">Cada misión que completas te hace más sabio y valiente. 🌟</p>
+                </div>
               </div>
             </section>
             <MissionsRightPanel />

@@ -1,4 +1,5 @@
 import { ChatMessage as Message } from '../../data/chatMock'
+import { hablar } from '../../useVoz'
 import { Icon } from './Icon'
 import { GlukaiImage } from './GlukaiImage'
 
@@ -31,9 +32,21 @@ export function ChatMessage({ message }: Props) {
         </div>
         <div className="mt-1.5 flex items-center gap-1 text-[11px] font-bold text-[#8AA0BA]">
           <span>{message.time}</span>
-          {isChild
-            ? <Icon name="check" className="h-3.5 w-3.5 text-[#60AAFF]" />
-            : <Icon name="heart" className="h-3.5 w-3.5 text-[#FF8FA8]" />}
+          {isChild ? (
+            <Icon name="check" className="h-3.5 w-3.5 text-[#60AAFF]" />
+          ) : (
+            <>
+              <Icon name="heart" className="h-3.5 w-3.5 text-[#FF8FA8]" />
+              <button
+                onClick={() => hablar(message.text)}
+                className="ml-0.5 rounded-full p-0.5 text-[#8AA0BA] transition hover:text-[#1677FF] focus:outline-none focus:ring-2 focus:ring-[#BFE7FF]"
+                aria-label="Escuchar mensaje de Kai"
+                title="Escuchar"
+              >
+                <Icon name="speaker" className="h-3.5 w-3.5" />
+              </button>
+            </>
+          )}
         </div>
       </div>
       {isChild && (

@@ -12,6 +12,7 @@ import { Sidebar } from '../components/chat/Sidebar'
 import { ChatMessage as Message, Emotion, initialMessages, suggestedActions } from '../data/chatMock'
 import { SuggestedAction } from '../components/chat/SuggestedAction'
 import { preguntarAKai } from '../api'
+import { hablar } from '../useVoz'
 
 function currentTime() {
   return new Intl.DateTimeFormat('es-CO', {
@@ -28,6 +29,31 @@ function getWordDelay(word: string) {
 }
 
 const talkingFrames = ['/hablando/78.png', '/hablando/79.png', '/hablando/80.png', '/hablando/81.png']
+const thinkingFrames = ['/pensando/image.png', '/pensando/image2.png', '/pensando/image3.png']
+
+type SpeechRecognitionResultLike = {
+  transcript: string
+}
+
+type SpeechRecognitionEventLike = {
+  results: ArrayLike<ArrayLike<SpeechRecognitionResultLike>>
+}
+
+type SpeechRecognitionErrorEventLike = {
+  error: string
+}
+
+type SpeechRecognitionLike = {
+  lang: string
+  interimResults: boolean
+  maxAlternatives: number
+  onstart: null | (() => void)
+  onend: null | (() => void)
+  onerror: null | ((event: SpeechRecognitionErrorEventLike) => void)
+  onresult: null | ((event: SpeechRecognitionEventLike) => void)
+  start: () => void
+  stop: () => void
+}
 
 export function ChatPage() {
   const [messages, setMessages] = useState<Message[]>(initialMessages)
@@ -36,18 +62,37 @@ export function ChatPage() {
   const [isImmersive, setIsImmersive] = useState(() => initialMessages.some((message) => message.author === 'child'))
   const [isKaiTalking, setIsKaiTalking] = useState(false)
   const [talkingFrameIndex, setTalkingFrameIndex] = useState(0)
+  const [thinkingFrameIndex, setThinkingFrameIndex] = useState(0)
+  const [isListening, setIsListening] = useState(false)
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null)
   const [emotion, setEmotion] = useState<Emotion>('Preocupado')
   const [showBreathing, setShowBreathing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const timeoutsRef = useRef<number[]>([])
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
 
   useEffect(() => {
     return () => {
       timeoutsRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId))
       timeoutsRef.current = []
     }
+  }, [])
+
+  // Leer saludo de Kai proveniente del selector de emociones
+  useEffect(() => {
+    const greeting = sessionStorage.getItem('kai_greeting')
+    if (!greeting) return
+    sessionStorage.removeItem('kai_greeting')
+    const msg: Message = {
+      id: Date.now(),
+      author: 'glukai',
+      text: greeting,
+      time: new Intl.DateTimeFormat('es-CO', { hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date()),
+    }
+    setMessages([msg])
+    setIsImmersive(true)
+    hablar(greeting)
   }, [])
 
   const renderedMessages = useMemo(
@@ -65,13 +110,59 @@ export function ChatPage() {
       setTalkingFrameIndex(0)
       return
     }
-
     const timer = window.setInterval(() => {
       setTalkingFrameIndex((current) => (current + 1) % talkingFrames.length)
     }, 140)
-
     return () => window.clearInterval(timer)
   }, [isKaiTalking])
+
+  useEffect(() => {
+    if (!isThinking) {
+      setThinkingFrameIndex(0)
+      return
+    }
+    const timer = window.setInterval(() => {
+      setThinkingFrameIndex((current) => (current + 1) % thinkingFrames.length)
+    }, 300)
+    return () => window.clearInterval(timer)
+  }, [isThinking])
+
+  function handleMicClick() {
+    const speechWindow = window as typeof window & {
+      SpeechRecognition?: new () => SpeechRecognitionLike
+      webkitSpeechRecognition?: new () => SpeechRecognitionLike
+    }
+    const SR = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition
+
+    if (!SR) {
+      console.warn('Tu navegador no soporta reconocimiento de voz.')
+      return
+    }
+
+    if (isListening) {
+      recognitionRef.current?.stop()
+      return
+    }
+
+    const recognition = new SR()
+    recognition.lang = 'es-ES'
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
+
+    recognition.onstart = () => setIsListening(true)
+    recognition.onend = () => setIsListening(false)
+    recognition.onerror = (event: SpeechRecognitionErrorEventLike) => {
+      if (event.error !== 'no-speech') console.error('Error de micrófono:', event.error)
+      setIsListening(false)
+    }
+    recognition.onresult = (event: SpeechRecognitionEventLike) => {
+      const transcript = event.results[0][0].transcript.trim()
+      if (transcript) sendMessage(transcript)
+    }
+
+    recognitionRef.current = recognition
+    recognition.start()
+  }
 
   function wait(ms: number) {
     return new Promise<void>((resolve) => {
@@ -94,6 +185,7 @@ export function ChatPage() {
 
     setStreamingMessage(baseMessage)
     setIsKaiTalking(true)
+    hablar(fullText)
 
     let partialText = ''
 
@@ -179,8 +271,8 @@ export function ChatPage() {
           <Sidebar />
         </div>
         <main
-          className={`relative mx-auto flex h-full min-w-0 flex-1 flex-col overflow-hidden px-3 pb-2 pt-3 transition-all duration-500 sm:px-4 lg:pb-2 xl:px-5 ${
-            isImmersive ? 'max-w-[900px]' : 'max-w-[1440px]'
+          className={`relative mx-auto flex h-full min-w-0 flex-1 flex-col px-3 pb-2 pt-3 transition-all duration-500 sm:px-4 lg:pb-2 xl:px-5 ${
+            isImmersive ? 'max-w-[900px] overflow-hidden' : 'max-w-[1440px] overflow-x-hidden overflow-y-auto overscroll-contain'
           }`}
         >
           <div
@@ -191,9 +283,9 @@ export function ChatPage() {
             <ChatHeader />
           </div>
 
-          <div className={`mt-2 grid min-h-0 flex-1 items-stretch gap-4 overflow-hidden transition-all duration-500 ${isImmersive ? 'grid-cols-1' : 'xl:grid-cols-[minmax(0,1fr)_292px] 2xl:grid-cols-[minmax(0,1fr)_312px]'}`}>
-            <section className={`flex h-full min-h-0 min-w-0 flex-col pr-1 transition-all duration-500 ${isImmersive ? 'mx-auto w-full max-w-[800px] overflow-hidden' : 'overflow-y-auto overscroll-contain'}`}>
-              <div className={`relative flex min-h-0 flex-1 flex-col overflow-hidden border border-white/80 bg-[linear-gradient(180deg,_#edf8ff_0%,_#ffffff_82%)] shadow-[0_18px_48px_rgba(22,119,255,0.08)] transition-all duration-500 ${isImmersive ? 'h-[800px] w-full max-w-[800px] rounded-[34px] px-5 py-4 md:px-8' : 'rounded-[28px] p-3.5 md:p-4'}`}>
+          <div className={`mt-2 grid min-h-0 flex-1 items-stretch gap-4 transition-all duration-500 ${isImmersive ? 'grid-cols-1 overflow-hidden' : 'xl:grid-cols-[minmax(0,1fr)_292px] 2xl:grid-cols-[minmax(0,1fr)_312px]'}`}>
+            <section className={`flex min-h-0 min-w-0 flex-col pr-1 transition-all duration-500 ${isImmersive ? 'mx-auto h-full w-full max-w-[800px] overflow-hidden' : 'w-full'}`}>
+              <div className={`relative flex flex-col overflow-hidden border border-white/80 bg-[linear-gradient(180deg,_#edf8ff_0%,_#ffffff_82%)] shadow-[0_18px_48px_rgba(22,119,255,0.08)] transition-all duration-500 ${isImmersive ? 'min-h-0 flex-1 h-full w-full max-w-[800px] rounded-[34px] px-5 py-4 md:px-8' : 'rounded-[28px] p-3.5 md:p-4'}`}>
                 <div className="pointer-events-none absolute inset-x-10 top-0 h-20 rounded-b-[44px] bg-[radial-gradient(circle,_rgba(255,255,255,0.95)_0%,_rgba(255,255,255,0)_72%)]" />
                 <div className="pointer-events-none absolute left-9 top-14 h-14 w-24 rounded-full bg-white/50 blur-xl" />
                 <div className="pointer-events-none absolute right-10 top-16 text-3xl text-[#9DD5FF]">♥</div>
@@ -223,27 +315,33 @@ export function ChatPage() {
                 </div>
 
                 <div
-                  className={`flex shrink-0 flex-col items-center justify-center transition-all duration-500 ${
-                    isImmersive ? 'mb-3 max-h-[180px] translate-y-0 px-2 pb-1 pt-1 opacity-100' : 'max-h-0 -translate-y-4 overflow-hidden opacity-0'
+                  className={`flex shrink-0 flex-col items-center transition-all duration-500 ${
+                    isImmersive ? 'mb-3 max-h-[260px] translate-y-0 py-2 opacity-100' : 'max-h-0 overflow-hidden opacity-0 -translate-y-4'
                   }`}
                 >
-                  <div className="relative flex h-[100px] items-end justify-center md:h-[120px]">
-                    <div className="absolute bottom-1 left-1/2 h-7 w-36 -translate-x-1/2 rounded-full bg-[#8acbff]/20 blur-md" />
+                  <div className="relative flex h-[150px] w-[110px] shrink-0 items-end justify-center md:h-[168px] md:w-[124px]">
+                    <div className="absolute bottom-0 left-1/2 h-5 w-32 -translate-x-1/2 rounded-full bg-[#8acbff]/25 blur-lg" />
                     {isKaiTalking ? (
                       <img
                         src={talkingFrames[talkingFrameIndex]}
                         alt="Kai hablando"
-                        className="relative h-24 w-24 object-contain object-bottom drop-shadow-sm md:h-28 md:w-28"
+                        className="relative h-full w-auto object-contain drop-shadow-md"
+                      />
+                    ) : isThinking ? (
+                      <img
+                        src={thinkingFrames[thinkingFrameIndex]}
+                        alt="Kai pensando"
+                        className="relative h-full w-auto object-contain drop-shadow-md"
                       />
                     ) : (
-                      <GlukaiImage
-                        variant="main"
+                      <img
+                        src="/glukai/glukai-main.png"
                         alt="Kai conversando"
-                        className="relative h-24 w-24 md:h-28 md:w-28"
+                        className="relative h-full w-auto object-contain drop-shadow-md"
                       />
                     )}
                   </div>
-                  <p className="mt-1.5 text-center text-base font-extrabold text-[#102A56]">Kai está contigo</p>
+                  <p className="mt-4 text-center text-base font-extrabold text-[#102A56]">Kai está contigo</p>
                   <p className="mt-1 text-center text-xs font-bold text-[#6F829E]">Escuchando y respondiendo paso a paso</p>
                 </div>
 
@@ -285,13 +383,13 @@ export function ChatPage() {
               </div>
 
               <div className={`mt-3 shrink-0 ${isImmersive ? 'pb-0.5' : ''}`}>
-                <ChatInput value={input} onChange={setInput} onSubmit={() => sendMessage()} disabled={isThinking} inputRef={inputRef} />
+                <ChatInput value={input} onChange={setInput} onSubmit={() => sendMessage()} disabled={isThinking} inputRef={inputRef} isListening={isListening} onMicClick={handleMicClick} />
                 {!isImmersive && <p className="mt-2 text-center text-[11px] font-bold text-[#7B8CA6]">🛡️ Glukai te escucha con respeto y cuida tu privacidad. Tus conversaciones son seguras.</p>}
               </div>
             </section>
 
             {!isImmersive && (
-              <div className="min-h-0 overflow-y-auto transition-all duration-500">
+              <div className="transition-all duration-500">
                 <RightPanel emotion={emotion} onEmotionChange={setEmotion} onBreathingClick={() => setShowBreathing(true)} />
               </div>
             )}

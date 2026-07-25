@@ -13,22 +13,22 @@ export function DashboardPage() {
     <div className="min-h-screen bg-[#F8FCFF] font-sans text-[#102A56]">
       <div className="flex min-h-screen overflow-hidden rounded-none border-sky-100 bg-white/70 shadow-none lg:m-3 lg:min-h-[calc(100vh-24px)] lg:rounded-[28px] lg:border">
         <Sidebar activePath="/" />
-        <main className="min-w-0 flex-1 px-4 pb-28 pt-7 sm:px-6 lg:pb-6 xl:px-7">
+        <main className="min-w-0 flex-1 px-4 pb-28 pt-5 sm:px-5 lg:pb-5 xl:px-6">
           <DashboardHeader />
 
-          <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(720px,1fr)_430px] 2xl:grid-cols-[minmax(780px,1fr)_440px]">
-            <section className="min-w-0 space-y-6">
+          <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(680px,1fr)_400px] 2xl:grid-cols-[minmax(740px,1fr)_410px]">
+            <section className="min-w-0 space-y-5">
               <EmotionHero />
               <QuickAccessGrid />
               <GlukaiQuote />
             </section>
 
-            <aside className="space-y-5">
+            <aside className="space-y-4">
               <NextMissionCard />
               <ProgressSummaryCard />
-              <section className="hidden rounded-[24px] bg-[#EAF5FF] p-6 text-center shadow-sm ring-1 ring-sky-100 lg:block">
-                <GlukaiImage variant="chat" alt="Glukai siempre esta contigo" className="mx-auto h-32 w-32" />
-                <p className="mt-3 text-lg font-extrabold text-[#102A56]">Glukai siempre esta contigo 💙</p>
+              <section className="hidden rounded-[24px] bg-[#EAF5FF] p-5 text-center shadow-sm ring-1 ring-sky-100 lg:block">
+                <GlukaiImage variant="chat" alt="Glukai siempre esta contigo" className="mx-auto h-28 w-28" />
+                <p className="mt-3 text-base font-extrabold text-[#102A56]">Glukai siempre esta contigo 💙</p>
               </section>
             </aside>
           </div>
