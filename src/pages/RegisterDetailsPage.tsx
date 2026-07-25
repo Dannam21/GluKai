@@ -35,7 +35,7 @@ export function RegisterDetailsPage() {
               <textarea maxLength={100} placeholder="Cuentale a Glukai..." className="mt-4 h-32 w-full resize-none rounded-xl border border-[#D6E0EE] p-5 text-sm font-bold outline-none focus:border-[#1677FF] focus:ring-4 focus:ring-[#BFE7FF]" />
               <span className="-mt-8 mr-4 block text-right text-sm font-bold text-[#8498B5]">0/100</span>
             </label>
-            <AuthButton href="/profiles" className="mt-8 w-full max-w-sm">¡Comenzar aventura! 🎉</AuthButton>
+            <AuthButton href="/register/caregiver-pin" className="mt-8 w-full max-w-sm">¡Comenzar aventura! 🎉</AuthButton>
           </div>
           <div className="relative rounded-[32px] bg-[#F8FCFF] p-8 text-center shadow-[0_20px_55px_rgba(16,42,86,0.06)] ring-1 ring-sky-100">
             <div className="absolute -left-8 top-12 text-2xl text-[#9DD5FF]">✦</div>
