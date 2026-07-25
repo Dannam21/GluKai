@@ -16,12 +16,12 @@ export type SuggestedActionItem = {
 }
 
 export const glukaiAssets = {
-  main: '/mascota.png',
-  chat: '/mascota.png',
-  breathing: '/mascota.png',
-  learning: '/mascota.png',
-  playing: '/mascota.png',
-  sleeping: '/mascota.png',
+  main: '/glukai/glukai-main.png',
+  chat: '/glukai/glukai-chat.png',
+  breathing: '/glukai/glukai-breathing.png',
+  learning: '/glukai/glukai-learning.png',
+  playing: '/glukai/glukai-playing.png',
+  sleeping: '/glukai/glukai-sleeping.png',
 }
 
 export const emotions: Emotion[] = [

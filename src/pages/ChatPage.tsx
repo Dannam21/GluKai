@@ -83,7 +83,7 @@ export function ChatPage() {
   return (
     <div className="min-h-screen bg-[#F8FCFF] font-sans text-[#102A56]">
       <div className="flex min-h-screen overflow-hidden rounded-none border-sky-100 bg-white/70 shadow-none lg:m-3 lg:min-h-[calc(100vh-24px)] lg:rounded-[28px] lg:border">
-        <Sidebar />
+        <Sidebar activePath="/chat" />
         <main className="flex min-w-0 flex-1 flex-col px-4 pb-28 pt-5 sm:px-6 lg:pb-6 xl:px-6">
           <ChatHeader onHistoryClick={() => setShowHistory(true)} />
 
@@ -127,7 +127,7 @@ export function ChatPage() {
           </div>
         </main>
       </div>
-      <BottomNav />
+      <BottomNav activePath="/chat" />
       {showBreathing && <BreathingModal onClose={() => setShowBreathing(false)} />}
       {showHistory && <HistoryDrawer onClose={() => setShowHistory(false)} />}
     </div>

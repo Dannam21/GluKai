@@ -13,7 +13,11 @@ const items = [
   ['Ayuda', '/help', 'help'],
 ] as const
 
-export function Sidebar() {
+type Props = {
+  activePath?: string
+}
+
+export function Sidebar({ activePath = '/chat' }: Props) {
   return (
     <aside className="hidden h-screen w-[248px] shrink-0 flex-col border-r border-sky-100 bg-white/92 px-5 py-6 shadow-[12px_0_35px_rgba(22,119,255,0.05)] lg:flex">
       <div className="flex items-center gap-3 px-2">
@@ -32,7 +36,7 @@ export function Sidebar() {
 
       <nav className="mt-5 flex flex-1 flex-col gap-1.5" aria-label="Navegacion principal">
         {items.map(([label, href, icon]) => {
-          const active = label === 'Hablar con Glukai'
+          const active = href === activePath
           return (
             <a
               key={label}
