@@ -19,7 +19,7 @@ export function PlaceholderPage({ path }: { path: string }) {
   return (
     <div className="min-h-screen bg-[#F8FCFF] font-sans">
       <div className="flex min-h-screen">
-        <Sidebar />
+        <Sidebar activePath={path} />
         <main className="grid flex-1 place-items-center px-6 pb-28 lg:pb-6">
           <section className="max-w-md rounded-[32px] bg-white p-8 text-center shadow-sm ring-1 ring-sky-100">
             <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#E9F6FF] text-[#1677FF]">
@@ -35,7 +35,7 @@ export function PlaceholderPage({ path }: { path: string }) {
           </section>
         </main>
       </div>
-      <BottomNav />
+      <BottomNav activePath={path} />
     </div>
   )
 }

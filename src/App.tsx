@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ChatPage } from './pages/ChatPage'
+import { DashboardPage } from './pages/DashboardPage'
+import { PlatePage } from './pages/PlatePage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 
 export default function App() {
@@ -11,6 +13,8 @@ export default function App() {
     return () => window.removeEventListener('popstate', updatePath)
   }, [])
 
+  if (path === '/') return <DashboardPage />
   if (path === '/chat') return <ChatPage />
+  if (path === '/plate') return <PlatePage />
   return <PlaceholderPage path={path} />
 }

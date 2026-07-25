@@ -18,6 +18,8 @@ type IconProps = {
     | 'music'
     | 'breath'
     | 'close'
+    | 'camera'
+    | 'upload'
   className?: string
 }
 
@@ -40,6 +42,8 @@ const paths: Record<IconProps['name'], string[]> = {
   music: ['M9 18V5l10-2v13', 'M9 18a3 3 0 1 1-2-2.8', 'M19 16a3 3 0 1 1-2-2.8'],
   breath: ['M12 5c3 2 3 5 0 7-3-2-3-5 0-7z', 'M5 12c2-3 5-3 7 0-2 3-5 3-7 0z', 'M12 19c-3-2-3-5 0-7 3 2 3 5 0 7z', 'M19 12c-2 3-5 3-7 0 2-3 5-3 7 0z'],
   close: ['M6 6l12 12', 'M18 6L6 18'],
+  camera: ['M4 8h4l2-3h4l2 3h4v11H4z', 'M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8z'],
+  upload: ['M12 16V4', 'M7 9l5-5 5 5', 'M5 20h14'],
 }
 
 export function Icon({ name, className = 'h-5 w-5' }: IconProps) {
